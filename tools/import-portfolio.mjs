@@ -9,12 +9,15 @@
  * Writes:
  *   drafts/{index,nav,footer}.plain.html  local preview: `npm run up` (aem up --html-folder drafts)
  *   drafts/media/*.webp                   images for the local preview
- *   da/{index,nav,footer}.html + da/media document format to upload to da.live
+ *   da/{index,nav,footer}.html + da/media document format to upload to da.live, images as JPEG:
+ *                                         da.live drops WebP files on drag and drop (only jpg, png,
+ *                                         gif, svg…); EDS serves optimized WebP renditions anyway
  *
  * The portfolio's <main> is already block markup (one <div> per section, one table-like <div>
  * per block), so the import only rewrites images and links. The metadata block (title,
  * description, robots) goes only in da/: EDS turns it into <meta> tags, aem up does not.
  */
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import http from 'node:http';
 import https from 'node:https';
@@ -46,18 +49,25 @@ const write = (file, content) => {
   fs.writeFileSync(file, content);
 };
 
-/** Largest WebP rendition of a <picture>, downloaded to drafts/media and da/media. */
+/** WebP -> JPEG with Pillow (Python, as roy/tools/build-images.py): Node has no image codec. */
+const toJpeg = (from, to) => execFileSync('python', ['-c',
+  'import sys; from PIL import Image; Image.open(sys.argv[1]).convert("RGB").save(sys.argv[2], "JPEG", quality=85, optimize=True, progressive=True)',
+  from, to]);
+
+/** Largest WebP rendition of a <picture>: as is in drafts/media, as JPEG in da/media. */
 async function importPicture(picture) {
   const srcset = (picture.match(/srcset="([^"]+)"/) || [])[1];
   const alt = (picture.match(/alt="([^"]*)"/) || [])[1] || '';
   if (!srcset) return picture;
   const largest = srcset.split(',').map((s) => s.trim().split(' '))
     .sort((a, b) => parseInt(b[1], 10) - parseInt(a[1], 10))[0][0];
-  const name = path.basename(largest).replace(/-\d+\.webp$/, '.webp');
+  const name = path.basename(largest).replace(/-\d+\.webp$/, '');
   const data = await get(new URL(largest, base));
-  write(path.join(root, 'drafts', 'media', name), data);
-  write(path.join(root, 'da', 'media', name), data);
-  return `<picture><img src="{media}/${name}" alt="${alt}"></picture>`;
+  const webp = path.join(root, 'drafts', 'media', `${name}.webp`);
+  write(webp, data);
+  fs.mkdirSync(path.join(root, 'da', 'media'), { recursive: true });
+  toJpeg(webp, path.join(root, 'da', 'media', `${name}.jpg`));
+  return `<picture><img src="{media}/${name}.{ext}" alt="${alt}"></picture>`;
 }
 
 const absolute = (html) => html.replace(/href="(?!https?:|mailto:|tel:|#)([^"]*)"/g, (m, href) => `href="${new URL(href, publicBase)}"`);
@@ -93,7 +103,7 @@ const foot = `<div><p>© ${new Date().getFullYear()} ${brand}. Running on Adobe 
 
 const docs = { index: [content, metadata], nav: [nav, ''], footer: [foot, ''] };
 Object.entries(docs).forEach(([name, [body, meta]]) => {
-  write(path.join(root, 'drafts', `${name}.plain.html`), `${body.replaceAll('{media}', '/drafts/media')}\n`);
-  write(path.join(root, 'da', `${name}.html`), `<body><header></header><main>${body.replaceAll('{media}', './media')}${meta}</main><footer></footer></body>\n`);
+  write(path.join(root, 'drafts', `${name}.plain.html`), `${body.replaceAll('{media}', '/drafts/media').replaceAll('{ext}', 'webp')}\n`);
+  write(path.join(root, 'da', `${name}.html`), `<body><header></header><main>${body.replaceAll('{media}', './media').replaceAll('{ext}', 'jpg')}${meta}</main><footer></footer></body>\n`);
 });
 console.log(`Imported ${base} -> drafts/ and da/ (${pictures.length} images)`);

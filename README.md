@@ -50,14 +50,19 @@ holds code only.
 
 ## Setup (accounts)
 
-1. Create a repository (public or private) from this one on GitHub (or push it: `git remote add origin
-   <your repo>`, then `git push -u origin main`).
+1. Create an empty repository on GitHub (public or private; no README, `.gitignore` or license,
+   they are already here), then `git remote add origin <your repo>` and `git push -u origin main`.
 2. Install the [AEM Code Sync](https://github.com/apps/aem-code-sync/installations/new) app
-   for that repository only.
-3. In [da.live](https://da.live/), create the site for `<owner>/<repo>` and upload the content
-   of `da/`: `index.html`, `nav.html`, `footer.html` and the `media/` folder. If an image does
-   not show after the upload, insert it again from the editor.
-4. Preview and publish `index`, `nav` and `footer` with the AEM Sidekick extension.
+   for that repository only, and complete its setup screen to the end ("Finish"): it creates the
+   site configuration. Add as admin the email you sign in to da.live with. `fstab.yaml` points
+   the content to `https://content.da.live/<owner>/<repo>/`. Until this step is done, every URL
+   answers `x-error: Missing configuration`.
+3. In [da.live](https://da.live/), check the account menu: the active Adobe profile must be the
+   one you added as admin (a work profile under the same login gets "Not permitted"). Then drag
+   in the content of `da/`: `index.html`, `nav.html`, `footer.html` and the `media/` folder.
+   Images are JPEG because da.live's drag and drop silently skips WebP files.
+4. Preview and publish `nav`, `footer` and `index` (in that order) from da.live or the AEM
+   Sidekick extension.
 5. The site is then at `https://main--<repo>--<owner>.aem.page/` (preview) and `.aem.live`.
 
 Every page carries `Robots: noindex, nofollow` in its metadata block: the Lab is meant to be

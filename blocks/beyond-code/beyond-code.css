@@ -1,0 +1,28 @@
+.beyond-code-text {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  align-items: baseline;
+}
+
+.beyond-code-text > div {
+  display: contents;
+}
+
+.beyond-code-photos {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.beyond-code-photos img {
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  object-fit: cover;
+}
+
+@media (width >= 900px) {
+  .beyond-code-photos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

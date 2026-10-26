@@ -1,325 +1,306 @@
 /*
- * Copyright 2020 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
+ * Global styles, loaded in the eager phase. Block styles live in blocks/<name>/<name>.css.
+ * Palette: pumice paper, basalt ink and one "author blue" accent (links, focus, block inspector).
  */
 
+/*
+ * Schibsted Grotesk (variable, latin subset), SIL Open Font License 1.1: see fonts/OFL-schibsted-grotesk.txt.
+ * Declared here with font-display: optional instead of the boilerplate's lazy fonts.css, and
+ * preloaded in the page head (head.html on EDS) on desktop only: if it is not ready for the first paint, the fallback
+ * stays and the text never reflows (no CLS); on mobile the first visit keeps the fallback and
+ * later visits get it from cache.
+ */
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: optional;
+  src: url('../fonts/schibsted-grotesk-latin-wght-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+    U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Arial adjusted to Schibsted Grotesk metrics, so the fallback takes the same room */
+@font-face {
+  font-family: schibsted-fallback;
+  src: local('Arial');
+  size-adjust: 104.71%;
+  ascent-override: 93.26%;
+  descent-override: 24.62%;
+  line-gap-override: 0%;
+}
+
 :root {
-  /* colors */
-  --background-color: white;
-  --light-color: #f8f8f8;
-  --dark-color: #505050;
-  --text-color: #131313;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
-
-  /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
-
-  /* body sizes */
-  --body-font-size-m: 22px;
-  --body-font-size-s: 19px;
-  --body-font-size-xs: 17px;
-
-  /* heading sizes */
-  --heading-font-size-xxl: 55px;
-  --heading-font-size-xl: 44px;
-  --heading-font-size-l: 34px;
-  --heading-font-size-m: 27px;
-  --heading-font-size-s: 24px;
-  --heading-font-size-xs: 22px;
-
-  /* nav height */
-  --nav-height: 64px;
+  --paper: #f3f4f1;
+  --paper-raised: #fbfbf9;
+  --ink: #1e2229;
+  --muted: #5b6270;
+  --rule: #d5d8dc;
+  --author: #2c6be0;
+  --author-ink: #1d4fb0;
+  --body-font: 'Schibsted Grotesk', schibsted-fallback, sans-serif;
+  --code-font: ui-monospace, 'Cascadia Mono', consolas, monospace;
+  --fs-small: 0.875rem;
+  --fs-body: 1.0625rem;
+  --fs-lead: 1.3125rem;
+  --fs-h3: 1.1875rem;
+  --fs-h2: 1.125rem;
+  --fs-display: clamp(2.5rem, 1.1rem + 5.8vw, 5.75rem);
+  --gutter: 16px;
+  --rail: 13rem;
+  --max-width: 76rem;
+  --header-height: 3.5rem;
 }
 
-/* fallback fonts */
-@font-face {
-  font-family: roboto-condensed-fallback;
-  size-adjust: 88.82%;
-  src: local('Arial');
-}
-
-@font-face {
-  font-family: roboto-fallback;
-  size-adjust: 99.529%;
-  src: local('Arial');
-}
-
-@media (width >= 900px) {
+@media (width >= 600px) {
   :root {
-    /* body sizes */
-    --body-font-size-m: 18px;
-    --body-font-size-s: 16px;
-    --body-font-size-xs: 14px;
-
-    /* heading sizes */
-    --heading-font-size-xxl: 45px;
-    --heading-font-size-xl: 36px;
-    --heading-font-size-l: 28px;
-    --heading-font-size-m: 22px;
-    --heading-font-size-s: 20px;
-    --heading-font-size-xs: 18px;
+    --gutter: 32px;
   }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
   display: none;
   margin: 0;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  font-family: var(--body-font-family);
-  font-size: var(--body-font-size-m);
-  line-height: 1.6;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body-font);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
 }
 
 body.appear {
   display: block;
 }
 
-header {
-  height: var(--nav-height);
-}
-
-header .header,
-footer .footer {
-  visibility: hidden;
-}
-
-header .header[data-block-status="loaded"],
-footer .footer[data-block-status="loaded"] {
-  visibility: visible;
-}
-
 h1,
 h2,
-h3,
-h4,
-h5,
-h6 {
-  margin-top: 0.8em;
-  margin-bottom: 0.25em;
-  font-family: var(--heading-font-family);
-  font-weight: 600;
-  line-height: 1.25;
-  scroll-margin: 40px;
+h3 {
+  margin: 0;
+  line-height: 1.2;
+  font-weight: 650;
 }
 
-h1 { font-size: var(--heading-font-size-xxl); }
-h2 { font-size: var(--heading-font-size-xl); }
-h3 { font-size: var(--heading-font-size-l); }
-h4 { font-size: var(--heading-font-size-m); }
-h5 { font-size: var(--heading-font-size-s); }
-h6 { font-size: var(--heading-font-size-xs); }
+h3 {
+  font-size: var(--fs-h3);
+}
 
 p,
-dl,
-ol,
-ul,
-pre,
-blockquote {
-  margin-top: 0.8em;
-  margin-bottom: 0.25em;
-}
-
-code,
-pre {
-  font-size: var(--body-font-size-s);
-}
-
-pre {
-  padding: 16px;
-  border-radius: 8px;
-  background-color: var(--light-color);
-  overflow-x: auto;
-  white-space: pre;
-}
-
-main > div {
-  margin: 40px 16px;
-}
-
-input,
-textarea,
-select,
-button {
-  font: inherit;
-}
-
-/* links */
-a:any-link {
-  color: var(--link-color);
-  text-decoration: none;
-  overflow-wrap: break-word;
-}
-
-a:hover {
-  color: var(--link-hover-color);
-  text-decoration: underline;
-}
-
-/* buttons */
-p.button-wrapper {
-  margin: 12px 0;
-}
-
-a.button:any-link,
-button.button {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 100%;
+ul {
   margin: 0;
-  border: 2px solid transparent;
-  border-radius: 2.4em;
-  padding: 0.5em 1.2em;
-  font: inherit;
-  font-weight: 500;
-  line-height: 1.25;
-  text-decoration: none;
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-a.button[aria-disabled="true"],
-button.button:disabled {
-  cursor: not-allowed;
-  pointer-events: none;
+ul {
+  padding: 0;
+  list-style: none;
 }
 
-a.button.primary,
-button.button.primary {
-  border-color: var(--text-color);
-  background-color: var(--text-color);
-  color: var(--background-color);
-}
-
-a.button.primary:hover,
-a.button.primary:focus-visible,
-button.button.primary:hover,
-button.button.primary:focus-visible {
-  border-color: var(--dark-color);
-  background-color: var(--dark-color);
-  color: var(--light-color);
-}
-
-a.button.primary[aria-disabled="true"],
-a.button.primary[aria-disabled="true"]:hover,
-a.button.primary[aria-disabled="true"]:focus-visible,
-button.button.primary:disabled,
-button.button.primary:disabled:hover,
-button.button.primary:disabled:focus-visible {
-  background-color: var(--light-color);
-  border-color: var(--light-color);
-  color: var(--dark-color);
-}
-
-a.button.secondary,
-button.button.secondary {
-  border-color: var(--text-color);
-  background-color: transparent;
-  color: var(--text-color);
-}
-
-a.button.secondary:hover,
-a.button.secondary:focus-visible,
-button.button.secondary:hover,
-button.button.secondary:focus-visible {
-  border-color: var(--dark-color);
-  background-color: var(--light-color);
-  color: var(--dark-color);
-}
-
-a.button.secondary[aria-disabled="true"],
-a.button.secondary[aria-disabled="true"]:hover,
-a.button.secondary[aria-disabled="true"]:focus-visible,
-button.button.secondary:disabled,
-button.button.secondary:disabled:hover,
-button.button.secondary:disabled:focus-visible {
-  background-color: var(--light-color);
-  border-color: var(--light-color);
-  color: var(--dark-color);
-}
-
-/* high-impact call-to-action */
-a.button.accent,
-button.button.accent {
-  border-color: var(--link-color);
-  background-color: var(--link-color);
-  color: var(--background-color);
-}
-
-a.button.accent:hover,
-a.button.accent:focus-visible,
-button.button.accent:hover,
-button.button.accent:focus-visible {
-  border-color: var(--link-hover-color);
-  background-color: var(--link-hover-color);
-}
-
-a.button.accent[aria-disabled="true"],
-a.button.accent[aria-disabled="true"]:hover,
-a.button.accent[aria-disabled="true"]:focus-visible,
-button.button.accent:disabled,
-button.button.accent:disabled:hover,
-button.button.accent:disabled:focus-visible {
-  background-color: var(--light-color);
-  border-color: var(--light-color);
-  color: var(--dark-color);
-}
-
-main img {
+img {
+  display: block;
   max-width: 100%;
-  width: auto;
   height: auto;
 }
 
-.icon {
-  display: inline-block;
-  height: 24px;
-  width: 24px;
+a {
+  color: var(--author-ink);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
 }
 
-.icon img {
-  height: 100%;
+h3 a {
+  color: var(--ink);
+  text-decoration-color: var(--rule);
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+h3 a:hover {
+  text-decoration-color: currentcolor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--author);
+  outline-offset: 3px;
+}
+
+/* Buttons: <p><strong><a> (primary) and <p><em><a> (secondary), see decorateButtons() */
+a.button {
+  display: inline-block;
+  padding: 0.6em 1.1em;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+a.button.primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+a.button.secondary {
+  color: var(--ink);
+}
+
+a.button:hover {
+  background: var(--author-ink);
+  border-color: var(--author-ink);
+  color: #fff;
+}
+
+/*
+ * Footer: the EDS footer block (content from /footer), or the same markup server-rendered in the
+ * portfolio. Out of the layout until loaded (after every section): even hidden, its box would sit
+ * at the top while the sections load and then jump down (CLS).
+ */
+footer:not(:has(> .footer[data-block-status='loaded'])) {
+  display: none;
+}
+
+footer .footer .default-content-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem var(--gutter) 3rem;
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+footer .footer a {
+  color: inherit;
+}
+
+/*
+ * Header: the EDS header block (content from /nav), or the same markup server-rendered in the
+ * portfolio. Its room is reserved so nothing moves when it loads.
+ */
+header {
+  min-height: 5.25rem;
+}
+
+header .header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0.75rem var(--gutter);
+  font-size: var(--fs-small);
+  visibility: hidden;
+}
+
+header .header[data-block-status='loaded'] {
+  visibility: visible;
+}
+
+header .header .brand {
+  margin-right: auto;
+  color: var(--ink);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+header .header nav {
+  display: flex;
+  gap: 1.25rem;
+  order: 3;
   width: 100%;
 }
 
-/* sections */
-main > .section {
-  margin: 40px 0;
+header .header nav a {
+  color: var(--ink);
+  text-decoration: none;
 }
 
-main > .section > div {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 24px;
-}
-
-main > .section:first-of-type {
-  margin-top: 0;
+header .header nav a:hover {
+  text-decoration: underline;
 }
 
 @media (width >= 900px) {
-  main > .section > div {
-    padding: 0 32px;
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    min-height: var(--header-height);
+    background: var(--paper);
+  }
+
+  header .header nav {
+    order: 0;
+    width: auto;
   }
 }
 
-/* section metadata */
-main .section.light,
-main .section.highlight {
-  background-color: var(--light-color);
-  margin: 0;
-  padding: 40px 0;
+/* Sections: heading in a narrow rail, block in the main column */
+main > .section {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 3rem var(--gutter);
+  border-top: 1px solid var(--rule);
+}
+
+main > .section:first-child {
+  border-top: 0;
+}
+
+/* Page title as default content (pages without a hero, e.g. the archive) */
+main .default-content-wrapper h1 {
+  margin-bottom: 1rem;
+  font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+  font-weight: 720;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+main .default-content-wrapper h1 + p {
+  max-width: 34em;
+  font-size: var(--fs-lead);
+  line-height: 1.45;
+}
+
+main .default-content-wrapper h2 {
+  margin-bottom: 1.5rem;
+  font-size: var(--fs-h2);
+  scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+
+@media (width >= 900px) {
+  main > .section {
+    display: grid;
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    column-gap: 3rem;
+    padding-block: 4.5rem;
+  }
+
+  main > .section > div:only-child {
+    grid-column: 1 / -1;
+  }
+
+  main .default-content-wrapper h2 {
+    position: sticky;
+    top: calc(var(--header-height) + 1.5rem);
+    margin-bottom: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

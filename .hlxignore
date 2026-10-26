@@ -6,3 +6,8 @@ package.json
 package-lock.json
 test/*
 sync-block-collection.sh
+src-react/*
+tools/*
+drafts/*
+vite.config.mjs
+da/*

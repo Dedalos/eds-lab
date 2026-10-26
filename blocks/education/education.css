@@ -1,0 +1,31 @@
+.education-item {
+  display: grid;
+  gap: 0.25rem;
+  padding-block: 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+
+.education-item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.education-when {
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.education-body p {
+  color: var(--muted);
+}
+
+@media (width >= 600px) {
+  .education-item {
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .education-when {
+    padding-top: 0.15rem;
+  }
+}

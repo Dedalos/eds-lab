@@ -38,15 +38,20 @@ if (window.trustedTypes && window.trustedTypes.createPolicy) {
 }
 
 /**
- * load fonts.css and set a session storage flag
+ * Records when each block finishes loading, for the block inspector (delayed.js).
+ * The first section loads in the eager phase, the rest in the lazy phase.
+ * @param {Element} main The main element
  */
-async function loadFonts() {
-  await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
-  try {
-    if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
-  } catch (e) {
-    // do nothing
-  }
+function trackBlockLoading(main) {
+  const firstSection = main.querySelector('.section');
+  new MutationObserver((mutations) => {
+    mutations.forEach(({ target }) => {
+      if (target.dataset.blockStatus === 'loaded' && !target.dataset.loadedAt) {
+        target.dataset.loadedAt = `${Math.round(performance.now())} ms`;
+        target.dataset.phase = target.closest('.section') === firstSection ? 'eager' : 'lazy';
+      }
+    });
+  }).observe(main, { attributes: true, attributeFilter: ['data-block-status'], subtree: true });
 }
 
 /**
@@ -165,22 +170,15 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    trackBlockLoading(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
-  }
-
-  try {
-    /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
-    if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
-      loadFonts();
-    }
-  } catch (e) {
-    // do nothing
   }
 }
 
 /**
  * Loads everything that doesn't need to be delayed.
+ * The font is preloaded in head.html and declared in styles.css, so there is no fonts.css.
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
@@ -196,7 +194,6 @@ async function loadLazy(doc) {
   loadFooter(doc.querySelector('body > footer'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
-  loadFonts();
 }
 
 /**
@@ -205,7 +202,8 @@ async function loadLazy(doc) {
  */
 function loadDelayed() {
   import('./consent-check.js');
-  // load anything that can be postponed to the latest here
+  // block inspector ("Show blocks" in the header)
+  window.setTimeout(() => import('./delayed.js'), 3000);
 }
 
 async function loadPage() {

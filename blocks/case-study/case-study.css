@@ -1,0 +1,86 @@
+.case-study {
+  display: grid;
+  gap: 4rem;
+}
+
+.case {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.case-media img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--rule);
+  background: var(--paper-raised);
+  object-fit: cover;
+  object-position: top;
+}
+
+.case-body h3 {
+  font-size: 1.625rem;
+  letter-spacing: -0.015em;
+}
+
+.case-client {
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+.case-role {
+  color: var(--muted);
+}
+
+.case-context {
+  margin-top: 1rem;
+}
+
+.case-contributions {
+  margin-top: 1rem;
+}
+
+.case-contributions li {
+  position: relative;
+  padding-left: 1.1rem;
+}
+
+.case-contributions li + li {
+  margin-top: 0.25rem;
+}
+
+.case-contributions li::before {
+  position: absolute;
+  top: 0.7em;
+  left: 0;
+  width: 0.45rem;
+  height: 1px;
+  background: var(--ink);
+  content: '';
+}
+
+.case-result {
+  margin-top: 1rem;
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--author);
+}
+
+.case-stack {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.case-stack li:not(:last-child)::after {
+  margin-right: 0.35em;
+  content: ',';
+}
+
+@media (width >= 900px) {
+  .case {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 2.5rem;
+    align-items: start;
+  }
+}

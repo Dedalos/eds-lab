@@ -1,0 +1,149 @@
+/* Shared by the server-rendered rows (div.timeline-item) and the React list (li.timeline-item) */
+
+.timeline-controls {
+  min-height: 7.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.timeline-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.timeline-filters button {
+  padding: 0.3rem 0.85rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+
+.timeline-filters button:hover {
+  border-color: var(--ink);
+}
+
+.timeline-filters button[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.timeline-count {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.timeline-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline-item {
+  display: grid;
+  gap: 0.25rem;
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.timeline-period {
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+.timeline-body > p {
+  color: var(--muted);
+}
+
+.timeline-body > p:first-of-type {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.timeline-body > p:nth-of-type(3) {
+  margin-top: 0.5rem;
+  color: var(--ink);
+}
+
+.timeline-body ul {
+  margin-top: 0.75rem;
+}
+
+.timeline-body li {
+  position: relative;
+  padding-left: 1.1rem;
+}
+
+.timeline-body li + li {
+  margin-top: 0.3rem;
+}
+
+.timeline-body li::before {
+  position: absolute;
+  top: 0.7em;
+  left: 0;
+  width: 0.45rem;
+  height: 1px;
+  background: var(--ink);
+  content: '';
+}
+
+.timeline-details-toggle {
+  margin-top: 0.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--author-ink);
+  font: inherit;
+  font-size: var(--fs-small);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+
+.timeline-tags ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  color: var(--muted);
+  font-size: var(--fs-small);
+}
+
+@media (width >= 600px) {
+  .timeline-controls {
+    min-height: 4.75rem;
+  }
+
+  .timeline-item {
+    grid-template-columns: 9rem minmax(0, 1fr);
+    column-gap: 1.5rem;
+  }
+
+  .timeline-period {
+    padding-top: 0.2rem;
+  }
+
+  .timeline-tags {
+    grid-column: 2;
+  }
+}
+
+@media (width >= 1100px) {
+  .timeline-item {
+    grid-template-columns: 9rem minmax(0, 1fr) 9rem;
+  }
+
+  .timeline-tags {
+    grid-column: 3;
+  }
+
+  .timeline-tags ul {
+    flex-direction: column;
+    padding-top: 0.2rem;
+  }
+}

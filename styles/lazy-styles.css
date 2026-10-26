@@ -1,1 +1,48 @@
-/* add global styles that can be loaded post LCP here */
+/* Lazy phase. Block inspector ("Show blocks", wired in scripts/delayed.js) */
+.block-inspector-toggle {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--author);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--author-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.block-inspector-toggle[aria-pressed='true'] {
+  background: var(--author);
+  color: #fff;
+}
+
+main .block {
+  position: relative;
+  outline: 1px dashed transparent;
+  outline-offset: 0;
+  transition: outline-color 0.2s, outline-offset 0.2s;
+}
+
+main .block::before {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: -8px;
+  z-index: 5;
+  padding: 2px 6px;
+  border-radius: 2px;
+  background: var(--author);
+  color: #fff;
+  font: 500 0.75rem/1.4 var(--code-font);
+  max-width: calc(100% + 16px);
+  white-space: pre-wrap;
+  content: attr(data-block-name) '   ' attr(data-phase) ', ' attr(data-loaded-at) attr(data-runtime);
+  pointer-events: none;
+}
+
+.show-blocks main .block {
+  outline-color: var(--author);
+  outline-offset: 8px;
+}
+
+.show-blocks main .block::before {
+  display: block;
+}
